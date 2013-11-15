@@ -4,7 +4,7 @@
     <string name="app_name">hearthstone</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="version_url">Hello world!</string>
+    <string name="version_url">http://newappsandroid.searchouse.net/op/hearthstone</string>
     
 
 </resources>

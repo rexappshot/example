@@ -3,11 +3,15 @@ package com.example.allconnector;
 import java.io.File;
 
 import com.example.allinterface.BaseCheck;
+import com.example.datebase.DBManger;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 public class StartClass extends ConnectClass implements BaseCheck {
 
@@ -30,7 +34,7 @@ public class StartClass extends ConnectClass implements BaseCheck {
 	@Override
 	public boolean bHasDateBase() {
 		// TODO Auto-generated method stub
-		File database=context.getDatabasePath("hearthstone.example.db");
+		File database=context.getDatabasePath("hearthstone.db");
 
 		if (!database.exists()) {
 		    return false;
@@ -50,6 +54,26 @@ public class StartClass extends ConnectClass implements BaseCheck {
 		}
 		
 		return sVersionName;
+	}
+	
+	public String getDateBaseVersion() {
+		
+		DBManger dbmanger= new DBManger(context);
+		SQLiteDatabase sqLiteDatabase = dbmanger.openDateBase();
+		Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM version", null);
+		
+		String version = null;
+		
+		if(cursor != null){
+			//int cursorcount = cursor.getCount();
+			//Log.i("StartClass","cursorcount:"+cursorcount);
+            if (cursor.moveToFirst()) {
+            	version = cursor.getString(cursor.getColumnIndex("version"));
+                //Log.i("StartClass","version:"+version);
+            }
+        }
+		
+		return version;
 	}
 
 }
