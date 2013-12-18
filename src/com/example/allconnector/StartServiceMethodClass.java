@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.example.allinterface.BaseCheck;
 import com.example.datebase.DBManger;
+import com.example.hearthstone.R;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -13,28 +14,26 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-public class StartClass extends ConnectClass implements BaseCheck {
+public class StartServiceMethodClass extends ConnectClass {
 
 	private Context context;
 	
-	public StartClass(Context context) {
+	public StartServiceMethodClass(Context context) {
 		// TODO Auto-generated constructor stub
 		super(context);
 		this.context = context;
 	}
 
-	@Override
-	public boolean bHasNetwork() {
+	public boolean getIsHasNetwork() {
 		// TODO Auto-generated method stub
 		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo !=null;
 	}
 
-	@Override
 	public boolean bHasDateBase() {
 		// TODO Auto-generated method stub
-		File database=context.getDatabasePath("hearthstone.db");
+		File database=context.getDatabasePath(context.getResources().getString(R.string.datebase_name));
 
 		if (!database.exists()) {
 		    return false;
@@ -43,7 +42,6 @@ public class StartClass extends ConnectClass implements BaseCheck {
 		}
 	}
 
-	@Override
 	public String getVersion() {
 		// TODO Auto-generated method stub
 		String sVersionName = null;  
@@ -56,7 +54,7 @@ public class StartClass extends ConnectClass implements BaseCheck {
 		return sVersionName;
 	}
 	
-	public String getDateBaseVersion() {
+	public float getDateBaseVersion() {
 		
 		DBManger dbmanger= new DBManger(context);
 		SQLiteDatabase sqLiteDatabase = dbmanger.openDateBase();
@@ -72,8 +70,14 @@ public class StartClass extends ConnectClass implements BaseCheck {
                 //Log.i("StartClass","version:"+version);
             }
         }
+		sqLiteDatabase.close();
 		
-		return version;
+		return Float.valueOf(version);
+	}
+	
+	public boolean deleteDatabase(){
+		
+		return new DBManger(context).deleteDatabase();
 	}
 
 }

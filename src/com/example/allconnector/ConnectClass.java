@@ -20,7 +20,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class ConnectClass implements BaseConnect {
+public class ConnectClass {
 
 	private Context context;
 	private String sJson;
@@ -30,7 +30,6 @@ public class ConnectClass implements BaseConnect {
 		this.context = context;
 	}
 
-	@Override
 	public boolean connect(String url) {
 		// TODO Auto-generated method stub
 		
@@ -53,10 +52,12 @@ public class ConnectClass implements BaseConnect {
 	}
 	
 	public String getJsonObjectString(String key){
-		String sValue = Jsondecode(sJson,key);
-		return sValue;
+		return Jsondecode(sJson,key);
 	}
 	
+	public float getJsonObjectFloat(String key){
+		return Float.valueOf(Jsondecode(sJson,key));
+	}
 	public class AsyncTaskClass extends AsyncTask<String, Integer, String> {
 		
 
@@ -106,7 +107,6 @@ public class ConnectClass implements BaseConnect {
 	}
 
 
-	@Override
 	public String Jsondecode(String sJson,String key) {
 		// TODO Auto-generated method stub
 		JSONObject jsonObject = null;

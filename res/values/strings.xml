@@ -5,6 +5,24 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="version_url">http://newappsandroid.searchouse.net/op/hearthstone</string>
-    
+    <string name="datebase_download_url">http://newappsandroid.searchouse.net/res/images/hearthstone.zip</string>
+    <string name="googleplay_market_download_url">https://play.google.com/store/apps/details?id=com.sega.sonicdash</string>
+    <string name="datebase_path">/hearthstoneRex/datebase/</string>
+    <string name="rar_name">hearthstone.rar</string>
+    <string name="datebase_name">hearthstone.db</string>
+    <string name="title_activity_main">MainActivity</string>
 
+    <color name="orange">#888000</color>
+    <string-array name="jobs">        
+        <item >德魯伊</item>
+        <item >獵人</item>
+        <item >法師</item>
+        <item >聖騎士</item>
+        <item >牧師</item>
+        <item >盜賊</item>
+        <item >薩滿</item>
+        <item >術士</item>
+        <item >戰士</item>
+        <item >中立</item>
+    </string-array>
 </resources>

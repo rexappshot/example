@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <style name="CustomActionBarTheme" parent="Theme.Sherlock">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>       
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar" parent="Widget.Sherlock.ActionBar">
+        <!-- item name="android:titleTextStyle">@style/Widget.MyApp.TitleTextStyle</item -->
+        <!-- item name="android:background">@drawable/dialog_background</item -->
+    </style>
+    
+    <style name="Widget.MyApp.TitleTextStyle" parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
+    	<item name="android:textColor">@color/orange</item>
+    </style>
+	
+</resources>

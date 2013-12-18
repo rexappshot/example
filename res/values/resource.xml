@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+        <item type="id" name="left_button" />
+        <item type="id" name="right_button" />
+        <item type="id" name="center_button" />
+        <item type="id" name="search_button" />
+        <item type="id" name="compose_button" />
+</resources>

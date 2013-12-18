@@ -1,6 +1,7 @@
 package com.example.datebase;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import android.util.Log;
 public class DBManger {
 
 	private final int BUFFER_SIZE = 400000;
-	private final static String DB_NAME = "hearthstone.db";
+	//private final static String DB_NAME = "hearthstone.db";
 	private String DB_PATH;
 	private SQLiteDatabase database;
 	private Context context;
@@ -31,7 +32,7 @@ public class DBManger {
 	}
 
 	public SQLiteDatabase openDateBase(){
-		this.database = this.openDateBase(DB_PATH + "/" + DB_NAME);
+		this.database = this.openDateBase(DB_PATH + "/" + context.getResources().getString(R.string.datebase_name));
 		
 		return this.database ;
 	}
@@ -39,8 +40,13 @@ public class DBManger {
 	private SQLiteDatabase openDateBase(String dbfile){
 		try {
             if (!(new File(dbfile).exists())) { //判断数据库文件是否存在，若不存在则执行导入，否则直接打开数据库
-                InputStream is = this.context.getResources().openRawResource(
-                        R.raw.hearthstone); //欲导入的数据库
+            	String STORAGE_PATH =android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+                InputStream is = new FileInputStream(
+                		STORAGE_PATH
+                		+context.getResources().getString(R.string.datebase_path)
+                		+context.getResources().getString(R.string.datebase_name));
+                		
+                //this.context.getResources().openRawResource(R.raw.hearthstone); //欲导入的数据库
                 FileOutputStream fos = new FileOutputStream(dbfile);
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int count = 0;
@@ -52,6 +58,7 @@ public class DBManger {
             }
             SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbfile,
                     null);
+            
             return db;
         } catch (FileNotFoundException e) {
             Log.e("Database", "File not found");
@@ -66,4 +73,13 @@ public class DBManger {
 	public void closeDatabase() {
         this.database.close();
     }
+	
+	public boolean deleteDatabase() {
+		final File file = context.getDatabasePath(DB_PATH + "/" + context.getResources().getString(R.string.datebase_name));
+		if(file.exists()){
+			return file.delete();
+		}else {
+			return false;
+		}
+	}
 }
