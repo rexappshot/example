@@ -14,5 +14,5 @@
     <style name="Widget.MyApp.TitleTextStyle" parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
     	<item name="android:textColor">@color/orange</item>
     </style>
-	
+    
 </resources>

@@ -6,23 +6,25 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 
 import com.example.hearthstone.R;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
 
-public class DBManger {
+public class DBManager {
 
 	private final int BUFFER_SIZE = 400000;
 	//private final static String DB_NAME = "hearthstone.db";
-	private String DB_PATH;
+	public static String DB_PATH;
 	private SQLiteDatabase database;
 	private Context context;
 	
-	public DBManger(Context context) {
+	public DBManager(Context context) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		DB_PATH = "/data"

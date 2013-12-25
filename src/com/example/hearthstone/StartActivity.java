@@ -7,11 +7,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.WindowManager;
 
+import com.example.allconnector.CustomDialogClass;
 import com.example.allconnector.OpenStartServiceMethodClass;
+import com.example.allconnector.WindowsHeightAndWidth;
 
 public class StartActivity extends Activity{
 
-	//private Dialog dialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -19,7 +20,10 @@ public class StartActivity extends Activity{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_start);
 				
+		new WindowsHeightAndWidth(this);
+		
 		startService(new OpenStartServiceMethodClass(this).getStartServiceIntent());
+		
 
 	}	
 	

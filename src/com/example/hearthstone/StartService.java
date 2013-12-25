@@ -55,11 +55,13 @@ public class StartService extends IntentService {
 					}else{
 						this.deleteOldData();						
 						this.downloadDateBase();
+						this.checkDateBaseVersionIsSame();
 						this.accessNextActivity();
 					}
 				}else{					
 					this.deleteOldData();
 					this.downloadDateBase();
+					this.checkDateBaseVersionIsSame();
 					this.accessNextActivity();
 				}
 				
@@ -82,7 +84,7 @@ public class StartService extends IntentService {
 	}
 	
 	private void deleteSDCard(){
-		receiverSendMessage("正在清除舊資料.....",UPDATE_PROGRESS);
+		receiverSendMessage("有新的更新 正在清除舊資料.....",UPDATE_PROGRESS);
 		
 		String STORAGE_PATH =android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
 		String DATEBASE_PATH = getResources().getString(R.string.datebase_path);

@@ -27,11 +27,9 @@ public class CustomDialogClass {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		
-		dialog = new Dialog(context,R.style.CustomDialog);
+		dialog = new Dialog(context,R.style.CustomDialog);		
 		dialog.setContentView(R.layout.dialog_example);
-		
-		//this.setCancelButton();
-		
+		//this.setCancelButton();		
 		
 	}
 

@@ -3,7 +3,7 @@ package com.example.allconnector;
 import java.io.File;
 
 import com.example.allinterface.BaseCheck;
-import com.example.datebase.DBManger;
+import com.example.datebase.DBManager;
 import com.example.hearthstone.R;
 
 import android.content.Context;
@@ -56,7 +56,7 @@ public class StartServiceMethodClass extends ConnectClass {
 	
 	public float getDateBaseVersion() {
 		
-		DBManger dbmanger= new DBManger(context);
+		DBManager dbmanger= new DBManager(context);
 		SQLiteDatabase sqLiteDatabase = dbmanger.openDateBase();
 		Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM version", null);
 		
@@ -77,7 +77,7 @@ public class StartServiceMethodClass extends ConnectClass {
 	
 	public boolean deleteDatabase(){
 		
-		return new DBManger(context).deleteDatabase();
+		return new DBManager(context).deleteDatabase();
 	}
 
 }
