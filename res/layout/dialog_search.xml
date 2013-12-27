@@ -163,7 +163,7 @@
         </RelativeLayout>
         
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/buttonClear"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -177,7 +177,7 @@
         </RelativeLayout>
 
 	    <Button
-	        android:id="@+id/button1"
+	        android:id="@+id/buttonSubmit"
 	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1"

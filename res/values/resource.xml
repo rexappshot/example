@@ -5,4 +5,15 @@
         <item type="id" name="center_button" />
         <item type="id" name="search_button" />
         <item type="id" name="compose_button" />
+        <item type="id" name="hero_button_parent" />
+        <item type="id" name="hero_button_0" />
+        <item type="id" name="hero_button_1" />
+        <item type="id" name="hero_button_2" />
+        <item type="id" name="hero_button_3" />
+        <item type="id" name="hero_button_4" />
+        <item type="id" name="hero_button_5" />
+        <item type="id" name="hero_button_6" />
+        <item type="id" name="hero_button_7" />
+        <item type="id" name="hero_button_8" />
+        
 </resources>

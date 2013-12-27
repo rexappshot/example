@@ -10,6 +10,7 @@ import com.example.hearthstone.R;
 
 public class TabLister implements TabListener {
 	private CardFragment fragment;
+	public static String where;
 	
 	public TabLister(CardFragment fragment){  
         this.fragment = fragment;  
@@ -18,6 +19,7 @@ public class TabLister implements TabListener {
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
+		fragment.where = where;
 		ft.replace(R.id.frameLayout, fragment);
 		Log.i("onTabSelected","onTabSelected");
 	}

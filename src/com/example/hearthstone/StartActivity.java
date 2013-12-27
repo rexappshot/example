@@ -1,6 +1,9 @@
 package com.example.hearthstone;
 
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -20,9 +23,10 @@ public class StartActivity extends Activity{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_start);
 				
-		new WindowsHeightAndWidth(this);
+		new WindowsHeightAndWidth(this);				
+
+		startService(new OpenStartServiceMethodClass(StartActivity.this).getStartServiceIntent());
 		
-		startService(new OpenStartServiceMethodClass(this).getStartServiceIntent());
 		
 
 	}	

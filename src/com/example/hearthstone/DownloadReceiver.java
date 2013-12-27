@@ -51,6 +51,13 @@ public class DownloadReceiver extends ResultReceiver {
             }
             */
         }else if(resultCode == StartService.FINISH){
+        	try {
+    			Thread.currentThread();
+    			Thread.sleep(2000);
+    		} catch (InterruptedException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
         	Intent intent= new Intent(context,MainActivity.class);
         	context.startActivity(intent);
         	((Activity)context).finish();
