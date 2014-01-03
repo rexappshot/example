@@ -8,6 +8,7 @@ import com.example.allconnector.WindowsHeightAndWidth;
 import com.example.allinterface.LeftClickInterface;
 import com.navdrawer.SimpleSideDrawer;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -57,17 +58,18 @@ public class LeftSideMenuClass {
 		
 		String baseHeroPath = baseHeroPath();
 		String[] leftMenuText = activity.getResources().getStringArray(R.array.leftmenu);
+		int[] leftMenuIconId = getDrawableIconId(activity.getResources().getStringArray(R.array.leftmenuicon));
 		LinearLayout linearLayout = (LinearLayout) activity.findViewById(R.id.leftLinearlayout);
 		
 		
 		
-		for(int i=0; i<10; i++) {
+		for(int i=0; i<leftMenuText.length; i++) {
 			/*
 		    String LinearlayoutID = "Linearlayout"+i;
 		    int resID = activity.getResources().getIdentifier(LinearlayoutID, "id", activity.getPackageName());
 		    */
 		    LinearLayout heroLinearLayout = createHeroLinearLayout(i, herolLayoutParams, imageLayoutParams, textLayoutParams
-		    		, leftMenuText[i], heroImageDecode(i, height, width, baseHeroPath));
+		    		, leftMenuText[i], leftMenuIconFactory(i, height, width, leftMenuIconId[i]));
 		    linearLayout.addView(heroLinearLayout);
 		    //linearLayoutArray[i] = ((LinearLayout) findViewById(resID));
 		    heroLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +81,7 @@ public class LeftSideMenuClass {
 			});
 		}
 		
-		return bitmapCahce.get("i9");
+		return bitmapCahce.get("i0");
 		
 	}
 	
@@ -104,6 +106,36 @@ public class LeftSideMenuClass {
 		linearLayout.addView(textView);
 		
 		return linearLayout;
+	}
+	
+	private int[] getDrawableIconId(String[] leftMenuIcon){
+		
+		int[] leftMenuIconId = new int[leftMenuIcon.length] ;
+		for(int i=0; i<leftMenuIcon.length; i++) {
+			Log.i("getDrawableIconId", "getDrawableIconId:"+activity.getResources().getIdentifier(leftMenuIcon[i], "drawable", activity.getPackageName()));
+			leftMenuIconId[i] = activity.getResources().getIdentifier(leftMenuIcon[i], "drawable", activity.getPackageName());			
+		}
+		
+		return leftMenuIconId;
+	}
+	
+	private Bitmap leftMenuIconFactory(int i, int height, int width, int drawableId){
+		
+		Bitmap bitmap = null;
+		Bitmap finalBitmap = null;
+		try {
+			BitmapFactory.Options opts = new BitmapFactory.Options();
+			//opts.inJustDecodeBounds = true;		
+			bitmap = BitmapFactory.decodeResource(activity.getResources(), drawableId, opts);
+			finalBitmap = Bitmap.createScaledBitmap(bitmap, width, width, true);
+	
+			bitmap.recycle();	    
+		    bitmapCahce.put("i"+String.valueOf(i), finalBitmap);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return finalBitmap;
 	}
 	
 	private Bitmap heroImageDecode(int i, int height, int width, String basePath){		

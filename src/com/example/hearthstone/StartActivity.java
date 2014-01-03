@@ -1,16 +1,13 @@
 package com.example.hearthstone;
 
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.WindowManager;
+import android.widget.TextView;
 
-import com.example.allconnector.CustomDialogClass;
 import com.example.allconnector.OpenStartServiceMethodClass;
 import com.example.allconnector.WindowsHeightAndWidth;
 
@@ -25,6 +22,7 @@ public class StartActivity extends Activity{
 				
 		new WindowsHeightAndWidth(this);				
 
+		OpenStartServiceMethodClass.setProgressTextView((TextView)findViewById(R.id.hello_world));
 		startService(new OpenStartServiceMethodClass(StartActivity.this).getStartServiceIntent());
 		
 		

@@ -28,15 +28,13 @@
         <item >中立</item>
     </string-array>
     <string-array name="leftmenu">        
-        <item >德魯伊</item>
-        <item >獵人</item>
-        <item >法師</item>
-        <item >聖騎士</item>
-        <item >牧師</item>
-        <item >盜賊</item>
-        <item >薩滿</item>
-        <item >術士</item>
-        <item >戰士</item>
-        <item >全部</item>
+        <item >瀏覽卡片</item>
+        <item >自訂卡片</item>
+        <item >競技場模式</item>
+    </string-array>
+     <string-array name="leftmenuicon">        
+        <item >icon</item>
+        <item >icon</item>
+        <item >icon</item>
     </string-array>
 </resources>

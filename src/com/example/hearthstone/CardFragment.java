@@ -23,6 +23,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnTouchListener;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,7 +66,7 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		mView = inflater.inflate(R.layout.card_fragment, container, false);
 		Context context = getActivity().getApplicationContext();
 		setCard(context);
-		ObjectAnimator.ofFloat(mView, "rotationY", -20, 0)
+		ObjectAnimator.ofFloat(mView, "rotationY", -180, 0)
         .setDuration(400).start();
 		setFling();
 		return mView;
@@ -187,11 +190,12 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub		
-						clickCardId = +v.getId();
+						clickCardId = v.getId();
 						return imageGestureDetector.onTouchEvent(event);
 					}
 				});	
 				imageView.setId(i+44);
+				imageView.setTag("im"+i);
 				imageView.setLayoutParams(imageViewLayoutParams);				
 				cardImageLoader.loadBitmap(Integer.valueOf(cardClass.get_id()), imageView);	
 				relativeLayout.addView(imageView);	
@@ -231,6 +235,14 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 	private SimpleOnGestureListener imageOnGestureListener = new SimpleOnGestureListener()
 	{
 		
+		@Override
+		public void onLongPress(MotionEvent e) {
+			// TODO Auto-generated method stub
+			Log.i("onLongPress","onLongPress");
+			saveCard();
+			super.onLongPress(e);
+		}
+
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			// TODO Auto-generated method stub			
@@ -373,15 +385,61 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		page = 0;
 		this.where = where;
 		
-		reDoAllWork();
-		
+		reDoAllWork();		
+
 		ObjectAnimator.ofFloat(mView, "rotationY", -90, 0)
         .setDuration(400).start();
+        
+	}
+	
+	private void saveCard(){
+		
+		imageviewAnimation();
+		
+	}
+	
+	private void imageviewAnimation(){
+		ImageView imageView = (ImageView)mView.findViewWithTag("im"+String.valueOf(clickCardId-44));
+		RelativeLayout relativeLayout = (RelativeLayout)imageView.getParent();
+		
+		Context context = getActivity().getApplicationContext();
+		int actionBarHeight = getArguments().getInt("actionBarHeight");
+		int windowHeight = WindowsHeightAndWidth.getHeight();
+		int fragmentHeight = (Math.abs(windowHeight-actionBarHeight))/2;
+		int layoutHeight = fragmentHeight/2;
+		
+		CardImageLoader cardImageLoader = new CardImageLoader(context);
+		RelativeLayout.LayoutParams imageViewLayoutParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT, (int)(fragmentHeight *1.0));
+		imageViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		imageViewLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+		
+		CardClass cardClass = cardArrayList.get((clickCardId-44));
+		ImageView tempImageView = new ImageView(context);
+		tempImageView.setAlpha(80);
+		tempImageView.setLayoutParams(imageViewLayoutParams);				
+		cardImageLoader.loadBitmap(Integer.valueOf(cardClass.get_id()), tempImageView);	
+		relativeLayout.addView(tempImageView);	
+		
+		AnimationSet animationSet = new AnimationSet(true);		
+		TranslateAnimation translateAnimation = new TranslateAnimation(0, 50, 0, 100);
+		translateAnimation.setDuration(1000);
+		
+		ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2, 1, 2);
+		scaleAnimation.setDuration(1000);
+		
+		animationSet.setFillAfter(true);
+		animationSet.addAnimation(translateAnimation);
+		animationSet.addAnimation(scaleAnimation);
+		
+		tempImageView.startAnimation(animationSet);
+		
+		
 	}
 	
 	private void imageClick(){		
 		
-		Context context = getActivity();
+		Context context = getActivity().getApplicationContext();
 		Dialog myDialog = new Dialog(context);
 		myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		myDialog.setContentView(R.layout.dialog_card);

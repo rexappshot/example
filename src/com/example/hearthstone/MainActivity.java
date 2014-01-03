@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import android.R.integer;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -62,6 +63,9 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 	private final String[] searchFields ={"name","mana","attack","heath","type","rare"};
 	private Dialog myDialog;
 	private Menu menu;
+	private boolean showMenuJobButton = false;
+	private boolean showMenuSearchButton = true;
+	private boolean showMenuCustomCardButton = false;
 	
 	
 	@Override
@@ -76,34 +80,34 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 				searchButtonClickEvent();
 				break;				
 			case R.id.compose_button:
-				Toast.makeText(this, "compose_button_click", Toast.LENGTH_LONG).show();
+				simpleSideDrawer.openRightSide();
 				break;	
-			case R.id.hero_button_0:
-				leftClickChagneTab(0,HeroImageClass.getHeroBitmapCahce().get(0));
+			case R.id.hero_button_0:				
+				cardJobChange(0,HeroImageClass.getHeroBitmapCahce().get(0));
 				break;	
 			case R.id.hero_button_1:
-				leftClickChagneTab(1,HeroImageClass.getHeroBitmapCahce().get(1));
+				cardJobChange(1,HeroImageClass.getHeroBitmapCahce().get(1));
 				break;
 			case R.id.hero_button_2:
-				leftClickChagneTab(2,HeroImageClass.getHeroBitmapCahce().get(2));
+				cardJobChange(2,HeroImageClass.getHeroBitmapCahce().get(2));
 				break;
 			case R.id.hero_button_3:
-				leftClickChagneTab(3,HeroImageClass.getHeroBitmapCahce().get(3));
+				cardJobChange(3,HeroImageClass.getHeroBitmapCahce().get(3));
 				break;
 			case R.id.hero_button_4:
-				leftClickChagneTab(4,HeroImageClass.getHeroBitmapCahce().get(4));
+				cardJobChange(4,HeroImageClass.getHeroBitmapCahce().get(4));
 				break;
 			case R.id.hero_button_5:
-				leftClickChagneTab(5,HeroImageClass.getHeroBitmapCahce().get(5));
+				cardJobChange(5,HeroImageClass.getHeroBitmapCahce().get(5));
 				break;
 			case R.id.hero_button_6:
-				leftClickChagneTab(6,HeroImageClass.getHeroBitmapCahce().get(6));
+				cardJobChange(6,HeroImageClass.getHeroBitmapCahce().get(6));
 				break;
 			case R.id.hero_button_7:
-				leftClickChagneTab(7,HeroImageClass.getHeroBitmapCahce().get(7));
+				cardJobChange(7,HeroImageClass.getHeroBitmapCahce().get(7));
 				break;
 			case R.id.hero_button_8:
-				leftClickChagneTab(8,HeroImageClass.getHeroBitmapCahce().get(8));
+				cardJobChange(8,HeroImageClass.getHeroBitmapCahce().get(8));
 				break;
 				
 		}
@@ -133,24 +137,30 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		new HeroImageClass(this);
 		ArrayList<Drawable> HeroBitmapCahce = HeroImageClass.getHeroBitmapCahce();
 		
-		SubMenu subMenu1 = menu.addSubMenu(2, R.id.hero_button_parent, 0, "職業");
+		if(showMenuJobButton){
+		SubMenu subMenu1 = menu.addSubMenu(0, R.id.hero_button_parent, 1, "職業").setIcon(HeroBitmapCahce.get(0));
 		for(int i=0; i<HeroBitmapCahce.size(); i++){
 			subMenu1.add(0, getItemId(i, getPackageName()), 0, jobs[i])
 			    	.setIcon(HeroBitmapCahce.get(i));
 			    	//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		}
 		
+		
 		MenuItem subMenu1Item = subMenu1.getItem();
 		//subMenu1Item.setIcon(R.drawable.ic_compose);
 		subMenu1Item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		
-		menu.add(1, R.id.search_button, 0, "搜尋")
-        	.setIcon(R.drawable.ic_search)
-        	.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		
-		menu.add(0, R.id.compose_button, 0, "牌組")
+		}
+		if(showMenuSearchButton){
+			menu.add(0, R.id.search_button, 2, "搜尋")
+	        	.setIcon(R.drawable.ic_search)
+	        	.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		}
+			
+		if(showMenuCustomCardButton){
+		menu.add(0, R.id.compose_button, 3, "牌組")
 			.setIcon(R.drawable.ic_compose)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		}
 		
 		return true;
 	}
@@ -162,7 +172,8 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 	private Bitmap setSideMenu(){
 		
 		simpleSideDrawer = new SimpleSideDrawer(MainActivity.this);
-		simpleSideDrawer.setLeftBehindContentView(R.layout.activity_left_sidemenu);		
+		simpleSideDrawer.setLeftBehindContentView(R.layout.activity_left_sidemenu);	
+		simpleSideDrawer.setRightBehindContentView(R.layout.activity_right_sidemenu);
 		
 		return new LeftSideMenuClass(this, this, simpleSideDrawer).createLeftMenu();
 
@@ -218,27 +229,63 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		return this.getResources().getStringArray(R.array.jobs);
 	}
 	
-	@Override
-	public void leftClickChagneTab(int tabkey ,Drawable drawable){
-	
-		menu.findItem(R.id.hero_button_parent).setIcon(drawable);
+	private void cardJobChange(int tabkey ,Drawable drawable){
 		
-		if(tabkey == jobs.length-1){			
+		menu.findItem(R.id.hero_button_parent).setIcon(drawable);
+		actionBar.removeAllTabs();
+		changeActionTab(tabkey);
+		
+	}
+	
+	@Override
+	public void leftClickChagneTab(int modeId ,Drawable drawable){
+			
+		changeMode(modeId);		
+		
+		if(modeId == 0){			
 			setStartTab();
-			actionBar.setTitle("全部");
+			actionBar.setTitle(getResources().getStringArray(R.array.leftmenu)[modeId]);
 		    actionBar.setIcon(drawable);
 		}else{
 			actionBar.removeAllTabs();
-			changeActionTab(tabkey);
-			changeActionTitle(tabkey,drawable);
+			changeActionTab(0);
+			changeActionTitle(getResources().getStringArray(R.array.leftmenu)[modeId],drawable);
 		}
 		
 		
 	}
 	
-	private void changeActionTitle(int tabkey, Drawable drawable){
+	private void changeMode(int modeId){
 		
-		actionBar.setTitle(jobs[tabkey]);
+		//reset
+		showMenuJobButton = false;
+		showMenuSearchButton = false;
+		showMenuCustomCardButton = false;
+		
+		switch(modeId){
+		
+			//瀏覽牌組
+			case 0:				
+				showMenuSearchButton = true;
+				break;
+			//自訂牌組	
+			case 1:
+				showMenuJobButton = true;
+				showMenuSearchButton = true;
+				showMenuCustomCardButton = true;
+				break;
+			//競技場模式	
+			case 2:
+				showMenuCustomCardButton = true;
+				break;
+		}
+		
+		invalidateOptionsMenu();
+	}
+	
+	private void changeActionTitle(String title, Drawable drawable){
+		
+		actionBar.setTitle(title);
 	    actionBar.setIcon(drawable);		
 		
 	}

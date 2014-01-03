@@ -1,9 +1,6 @@
 package com.example.hearthstone;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
-import com.example.allconnector.WindowsHeightAndWidth;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,21 +8,23 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.example.allconnector.WindowsHeightAndWidth;
+
 public class HeroImageClass {	
 
 	public static ArrayList<Drawable> HeroBitmapCahce = new ArrayList<Drawable>();
-	private Context context;
+	private static Context context;
 
 	public HeroImageClass(Context context) {
 		// TODO Auto-generated constructor stub		
-		this.context = context;		
+		HeroImageClass.context = context;		
 		if(HeroBitmapCahce.size() == 0){
 			makeImages();
 		}
 		
 	}
 	
-	public void makeImages(){
+	public static void makeImages(){
 		
 		String baseHeroPath = baseHeroPath();		
 		final int height = (int) (WindowsHeightAndWidth.getHeight()*0.15);
@@ -58,10 +57,13 @@ public class HeroImageClass {
 	
 
 	public static  ArrayList<Drawable> getHeroBitmapCahce() {		
+		if(HeroBitmapCahce.size() == 0){
+			makeImages();
+		}
 		return HeroBitmapCahce;
 	}
 	
-	private String baseHeroPath(){		
+	private static String baseHeroPath(){		
 		return android.os.Environment.getExternalStorageDirectory().getAbsolutePath()+context.getResources().getString(R.string.hero_path);
 	}
 

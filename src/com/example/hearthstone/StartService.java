@@ -17,6 +17,7 @@ public class StartService extends IntentService {
 	public static final int CLOSE_APP = 1428;
 	public static final int FINISH = 7894;
 	public static final int OPEN_WEB = 7854;
+	public static final int BUG = 7889;
 	private StartServiceMethodClass StartServiceMethodClass = new StartServiceMethodClass(this);
 	
 	private ResultReceiver receiver;
@@ -40,42 +41,51 @@ public class StartService extends IntentService {
 		receiverSendMessage("正在確認網路狀態.....",UPDATE_PROGRESS);
 		
 		
-		//確認網路
-		if(StartServiceMethodClass.getIsHasNetwork()){		
-			//連結sever 獲取版本資訊
-			this.connectVersionSever();
+		try {
 			
-			//確認目前架上版本
-			if(this.checkAppVersionIsSame()){
-				//確認DB版本以及是否存在 如果否 下載 如果是 進下一個Activity 
-				if(this.checkDateBaseExist()){					
-					if(this.checkDateBaseVersionIsSame()){
-						this.accessNextActivity();
-						
-					}else{
-						this.deleteOldData();						
+			//確認網路
+			if(StartServiceMethodClass.getIsHasNetwork()){		
+				//連結sever 獲取版本資訊
+				this.connectVersionSever();
+				
+				//確認目前架上版本
+				if(this.checkAppVersionIsSame()){
+					//確認DB版本以及是否存在 如果否 下載 如果是 進下一個Activity 
+					if(this.checkDateBaseExist()){					
+						if(this.checkDateBaseVersionIsSame()){
+							this.accessNextActivity();
+							
+						}else{
+							this.deleteOldData();						
+							this.downloadDateBase();
+							this.checkDateBaseVersionIsSame();
+							this.accessNextActivity();
+						}
+					}else{					
+						this.deleteOldData();
 						this.downloadDateBase();
 						this.checkDateBaseVersionIsSame();
 						this.accessNextActivity();
 					}
-				}else{					
-					this.deleteOldData();
-					this.downloadDateBase();
-					this.checkDateBaseVersionIsSame();
-					this.accessNextActivity();
+					
+				}else{
+					receiverSendMessage("請下載新的版本",OPEN_WEB);
+				}			
+			}else{		
+				//無網路 確認DB是否存在 如果否 關閉APP 如果是進下一個Activity
+				if(this.checkDateBaseExist()){				
+					this.accessNextActivity();				
+				}else{
+					receiverSendMessage("程式即將關閉",CLOSE_APP);				
 				}
-				
-			}else{
-				receiverSendMessage("請下載新的版本",OPEN_WEB);
-			}			
-		}else{		
-			//無網路 確認DB是否存在 如果否 關閉APP 如果是進下一個Activity
-			if(this.checkDateBaseExist()){				
-				this.accessNextActivity();				
-			}else{
-				receiverSendMessage("程式即將關閉",CLOSE_APP);				
 			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			
+			receiverSendMessage("發生了一些錯誤",BUG);
 		}
+		
 	}
 	
 	private void deleteOldData(){

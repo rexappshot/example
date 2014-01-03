@@ -1,21 +1,22 @@
 package com.example.allconnector;
 
-import com.example.hearthstone.DownloadReceiver;
-import com.example.hearthstone.R;
-import com.example.hearthstone.StartService;
-
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.widget.TextView;
 
+import com.example.hearthstone.DownloadReceiver;
+import com.example.hearthstone.StartService;
+
 public class OpenStartServiceMethodClass {
 
-	private Activity activity;
+	private Context context;
+	private static DownloadReceiver downloadReceiver;
+	private static TextView progressTextView;
 	
-	public OpenStartServiceMethodClass(Activity activity) {
+	public OpenStartServiceMethodClass(Context context) {
 		// TODO Auto-generated constructor stub
-		this.activity = activity;
+		this.context = context;
 	}
 	
 	/**
@@ -24,30 +25,31 @@ public class OpenStartServiceMethodClass {
 	 * @return Intent
 	 */
 	public Intent getStartServiceIntent(){
+		getDownloadReceiver();
 		Intent intent = new Intent();
-		intent.setClass(this.activity, StartService.class);
-		intent.putExtra("receiver", this.getDownloadReceiver());
+		intent.setClass(this.context, StartService.class);
+		intent.putExtra("receiver", downloadReceiver);
 		return intent;
 	}
 	
 	/**
 	 * DownloadReceiver 用來更新介面
-	 * @return
 	 */
-	private DownloadReceiver getDownloadReceiver(){
-		DownloadReceiver downloadReceiver = new DownloadReceiver(new Handler(), activity);
-		downloadReceiver.setProgressTextview(this.getStartProgressTextView());
+	private void getDownloadReceiver(){
+		if(downloadReceiver == null){
+			downloadReceiver = new DownloadReceiver(new Handler(), context);
+			downloadReceiver.setProgressTextview(progressTextView);
+		}
 		
-		return downloadReceiver;
 	}
-	
 	
 	/**
 	 * TextView 用來通知使用者當下狀態
 	 * 
 	 * @return TextView
 	 */
-	private TextView getStartProgressTextView(){
-		return (TextView) this.activity.findViewById(R.id.hello_world);
+	public static void setProgressTextView(TextView progressTextView) {
+		OpenStartServiceMethodClass.progressTextView = progressTextView;
 	}
+
 }

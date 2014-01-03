@@ -1,6 +1,7 @@
 package com.example.hearthstone;
 
 import com.example.allconnector.CustomDialogClass;
+import com.example.allconnector.OpenStartServiceMethodClass;
 
 import android.app.Activity;
 import android.content.Context;
@@ -96,7 +97,10 @@ public class DownloadReceiver extends ResultReceiver {
 			customDialog.getDialog().show();
         	
         	
-        }
+        }else if(resultCode == StartService.BUG){
+			 context.stopService(new Intent(context, StartService.class));
+			 context.startService(new OpenStartServiceMethodClass(context).getStartServiceIntent());
+		}
     }
 
 }
