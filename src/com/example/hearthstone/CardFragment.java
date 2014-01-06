@@ -10,6 +10,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.TransitionDrawable;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,6 +26,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnTouchListener;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
@@ -415,12 +421,13 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		Context context = getActivity().getApplicationContext();
 		int actionBarHeight = getArguments().getInt("actionBarHeight");
 		int windowHeight = WindowsHeightAndWidth.getHeight();
+		int windowWidth = WindowsHeightAndWidth.getWidth();
 		int fragmentHeight = (Math.abs(windowHeight-actionBarHeight))/2;
 		int layoutHeight = fragmentHeight/2;
 		
 		CardImageLoader cardImageLoader = new CardImageLoader(context);
 		RelativeLayout.LayoutParams imageViewLayoutParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT, (int)(fragmentHeight *1.0));
+				RelativeLayout.LayoutParams.MATCH_PARENT, (int)(fragmentHeight *0.8));
 		imageViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 		imageViewLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
 		
@@ -432,15 +439,30 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		relativeLayout.addView(tempImageView);	
 		
 		AnimationSet animationSet = new AnimationSet(true);		
-		TranslateAnimation translateAnimation = new TranslateAnimation(0, 50, 0, 100);
-		translateAnimation.setDuration(1000);
+		int anHeight = -20;
+		if((clickCardId-44) == 1 || (clickCardId-44) == 3){
+			anHeight = -fragmentHeight; 
+		}
+		int anWidth = (int)(windowWidth*0.5);
+		if((clickCardId-44) == 0 || (clickCardId-44) == 1){
+			anWidth = windowWidth; 
+		}
+		TranslateAnimation translateAnimation = new TranslateAnimation(0,anWidth,0,anHeight);
+		translateAnimation.setDuration(500);
+		translateAnimation.setAnimationListener(new MyAnimationListener(tempImageView));
 		
-		ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2, 1, 2);
-		scaleAnimation.setDuration(1000);
+		AlphaAnimation trans0to1 = new AlphaAnimation (0,1);
+        trans0to1.setDuration(500);
+        trans0to1.setInterpolator(new AccelerateInterpolator(1.0f));
+        imageView.setAnimation(trans0to1);
+        
+		ScaleAnimation scaleAnimation = new ScaleAnimation(1, 0, 1, 0);
+		scaleAnimation.setDuration(500);
 		
 		animationSet.setFillAfter(true);
-		animationSet.addAnimation(translateAnimation);
 		animationSet.addAnimation(scaleAnimation);
+		animationSet.addAnimation(translateAnimation);
+		
 		
 		tempImageView.startAnimation(animationSet);
 		
@@ -449,7 +471,7 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 	
 	private void imageClick(){		
 		
-		Context context = getActivity().getApplicationContext();
+		Context context = getActivity();
 		Dialog myDialog = new Dialog(context);
 		myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		myDialog.setContentView(R.layout.dialog_card);
@@ -536,10 +558,27 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		}
 	}
 	
+
 	public int pxToDp(int px) {
 	    DisplayMetrics displayMetrics = getActivity().getApplicationContext().getResources().getDisplayMetrics();
 	    int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
 	    return dp;
+	}
+	    
+	private class MyAnimationListener implements AnimationListener {
+	    ImageView imageView;
+	    public MyAnimationListener(ImageView imageView){
+	    	this.imageView = imageView;
+	    }
+	    public void onAnimationEnd(Animation animation) {
+	    	Log.i("onAnimationEnd","onAnimationEnd");
+	    	imageView.clearAnimation();
+	    	((RelativeLayout)imageView.getParent()).removeView(imageView);
+	    }
+	    public void onAnimationRepeat(Animation animation) {
+	    }
+	    public void onAnimationStart(Animation animation) {
+	    }
 	}
 
 }
