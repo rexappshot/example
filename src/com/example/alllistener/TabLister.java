@@ -11,6 +11,7 @@ import com.example.hearthstone.R;
 public class TabLister implements TabListener {
 	private CardFragment fragment;
 	public static String where;
+	public static int modeId;
 	
 	public TabLister(CardFragment fragment){  
         this.fragment = fragment;  
@@ -20,6 +21,7 @@ public class TabLister implements TabListener {
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
 		fragment.where = where;
+		fragment.modeId = modeId;
 		ft.replace(R.id.frameLayout, fragment);
 		Log.i("onTabSelected","onTabSelected");
 	}

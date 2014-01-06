@@ -43,6 +43,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 import com.example.allconnector.CardImageLoader;
 import com.example.allconnector.WindowsHeightAndWidth;
+import com.example.allinterface.CardClass;
 import com.example.allinterface.LeftClickInterface;
 import com.example.allinterface.SearchInterface;
 import com.example.alllistener.TabLister;
@@ -66,6 +67,7 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 	private boolean showMenuJobButton = false;
 	private boolean showMenuSearchButton = true;
 	private boolean showMenuCustomCardButton = false;
+	private static RightSideMenuClass rightSideMenuClass;
 	
 	
 	@Override
@@ -192,9 +194,10 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 	private void setStartTab(){
 		
 		actionBar.removeAllTabs();
+		final int modeId = 0;
 		
 		for(int i=0; i<10;i++){
-			Tab tab = getTab(addCardFragment(jobs[i]),jobs[i]);
+			Tab tab = getTab(addCardFragment(jobs[i]),jobs[i], modeId);
 			actionBar.addTab(tab);
 			
 			if(i==0){
@@ -216,8 +219,9 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 	    return cardFragment;
 	}
 	
-	private Tab getTab(CardFragment cardFragment,String job){		
+	private Tab getTab(CardFragment cardFragment,String job,int modeId){	
 		
+		TabLister.modeId = modeId;
 		return actionBar.newTab().setText(job).setTabListener(new TabLister(cardFragment));
 	}
 	
@@ -231,9 +235,10 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 	
 	private void cardJobChange(int tabkey ,Drawable drawable){
 		
+		final int modeId = 1;
 		menu.findItem(R.id.hero_button_parent).setIcon(drawable);
 		actionBar.removeAllTabs();
-		changeActionTab(tabkey);
+		changeActionTab(tabkey, modeId);
 		
 	}
 	
@@ -248,7 +253,7 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		    actionBar.setIcon(drawable);
 		}else{
 			actionBar.removeAllTabs();
-			changeActionTab(0);
+			changeActionTab(0, modeId);
 			changeActionTitle(getResources().getStringArray(R.array.leftmenu)[modeId],drawable);
 		}
 		
@@ -290,10 +295,10 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		
 	}
 	
-	private void changeActionTab(int tabkey){		
+	private void changeActionTab(int tabkey, int modeId){		
 		
-		Tab tab = getTab(addCardFragment(jobs[tabkey]), jobs[tabkey]);		
-		Tab tab2 = getTab(addCardFragment(jobs[jobs.length-1]), jobs[jobs.length-1]);
+		Tab tab = getTab(addCardFragment(jobs[tabkey]), jobs[tabkey], modeId);		
+		Tab tab2 = getTab(addCardFragment(jobs[jobs.length-1]), jobs[jobs.length-1], modeId);
 		actionBar.addTab(tab);
 		actionBar.addTab(tab2);
 		actionBar.selectTab(tab);
@@ -448,10 +453,36 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		myDialog.show();
 		
 	}
-	/*
-	public void passInterface(SearchInterface searchInterface){
-		this.searchInterface = searchInterface;
-	}*/
+
+	public boolean checkCustomCard(CardClass cardClass){
+		
+		if(rightSideMenuClass == null){
+			rightSideMenuClass = new RightSideMenuClass(this);
+		}
+
+		if(cardClass.getRare().equals("傳說")){
+			if(rightSideMenuClass.isFullOneCard(Integer.valueOf(cardClass.get_id()))){
+				saveCustomCard(cardClass);				
+				return true;
+			}else{
+				Toast.makeText(this, "此卡數量已到達上限", Toast.LENGTH_SHORT).show();				
+				return false;
+			}
+		}else{
+			if(rightSideMenuClass.isFullTwoCard(Integer.valueOf(cardClass.get_id()))){
+				saveCustomCard(cardClass);
+				return true;
+			}else{
+				Toast.makeText(this, "此卡數量已到達上限", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+		}		
+		
+	}
+	
+	private void saveCustomCard(CardClass cardClass){
+		rightSideMenuClass.addCard(cardClass);
+	}
 		
 
 }

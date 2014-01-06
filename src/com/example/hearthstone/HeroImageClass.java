@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 
 import com.example.allconnector.WindowsHeightAndWidth;
 
@@ -27,8 +28,10 @@ public class HeroImageClass {
 	public static void makeImages(){
 		
 		String baseHeroPath = baseHeroPath();		
-		final int height = (int) (WindowsHeightAndWidth.getHeight()*0.15);
-		final int width = (int) (WindowsHeightAndWidth.getWidth()*0.15);
+		final int height = dpToPx(96);
+		final int width = dpToPx(96);
+		//final int height = (int) (WindowsHeightAndWidth.getHeight()*0.3);
+		//final int width = (int) (WindowsHeightAndWidth.getWidth()*0.3);
 		
 		for(int i=0; i<9; i++) {
 			heroImageDecode(i, height, width, baseHeroPath);
@@ -67,4 +70,9 @@ public class HeroImageClass {
 		return android.os.Environment.getExternalStorageDirectory().getAbsolutePath()+context.getResources().getString(R.string.hero_path);
 	}
 
+	public static int dpToPx(int dp) {
+	    DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+	    int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
+	    return px;
+	}
 }

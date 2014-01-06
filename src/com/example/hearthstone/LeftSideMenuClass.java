@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -188,5 +189,11 @@ public class LeftSideMenuClass {
 
 	private String baseHeroPath(){		
 		return android.os.Environment.getExternalStorageDirectory().getAbsolutePath()+activity.getResources().getString(R.string.hero_path);
+	}
+	
+	public int dpToPx(int dp) {
+	    DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+	    int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
+	    return px;
 	}
 }

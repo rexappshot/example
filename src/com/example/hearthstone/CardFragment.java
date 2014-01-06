@@ -6,6 +6,7 @@ import android.R.integer;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Service;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
 import android.opengl.Visibility;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -33,13 +35,14 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.example.allconnector.CardImageLoader;
@@ -48,6 +51,8 @@ import com.example.allinterface.CardClass;
 import com.example.allinterface.CardTextControlClass;
 import com.example.allinterface.SearchInterface;
 import com.example.datebase.DBManager;
+
+import customclassview.AutoResizeTextView;
 
 public class CardFragment extends SherlockFragment implements SearchInterface{
 
@@ -58,6 +63,7 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 	private int page = 0;
 	private boolean arrivalEnd = false;
 	public String where;
+	public int modeId;
 	public int clickCardId;
 	
 	@Override
@@ -159,16 +165,22 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		int layoutWidth = windowWidth/2;
 		
 		RelativeLayout.LayoutParams textViewLayoutParams = new RelativeLayout.LayoutParams(
-				(int)(layoutWidth*0.8), (int)(layoutHeight*0.3));
+				(int)(layoutWidth*0.85), (int)(layoutHeight*0.38));
 		textViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		//textViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		textViewLayoutParams.setMargins((int)(layoutWidth*0.13), (int)(layoutHeight*0.95), 0, 0);
+		textViewLayoutParams.setMargins((int)(layoutWidth*0.1), (int)(layoutHeight*0.9), 0, 0);
 		
 		RelativeLayout.LayoutParams textViewAreaLayoutParams = new RelativeLayout.LayoutParams(
 				(int)(layoutWidth*0.6), (int)(layoutHeight*0.4));
 		textViewAreaLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		textViewAreaLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		textViewAreaLayoutParams.setMargins(0, 0, 0, (int)(layoutHeight *0.35));
+		//textViewAreaLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		textViewAreaLayoutParams.setMargins((int)(layoutWidth*0.2), 0, 0, (int)(layoutHeight *0.32));
+		
+		RelativeLayout.LayoutParams textViewAreaLayoutParams2 = new RelativeLayout.LayoutParams(
+				(int)(layoutWidth*0.55), (int)(layoutHeight*0.4));
+		textViewAreaLayoutParams2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		//textViewAreaLayoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		textViewAreaLayoutParams2.setMargins((int)(layoutWidth*0.25), 0, 0, (int)(layoutHeight *0.38));
 		
 		RelativeLayout.LayoutParams imageViewLayoutParams = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT, (int)(fragmentHeight *0.8));
@@ -217,21 +229,26 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 				textView.setGravity(Gravity.CENTER_HORIZONTAL);				
 				if(cardClass.getType().equals("手下")){
 					textView.setBackgroundResource(R.drawable.t01);
-					textView.setPadding(0, pxToDp(10), 0, 0);
 				}else{
 					textView.setBackgroundResource(R.drawable.t02);
 				}
-				textView.setLayoutParams(textViewLayoutParams);				
+				textView.setLayoutParams(textViewLayoutParams);	
 				relativeLayout.addView(textView);
 				
 				if(cardClass.getDescription() != null){
-					TextView textViewArea = new TextView(context);	
+					AutoResizeTextView textViewArea = new AutoResizeTextView(context);	
 					textViewArea.setText(cardClass.getDescription());
 					textViewArea.setGravity(Gravity.CENTER);
-					textViewArea.setTextSize(pxToDp(14));
+					//textViewArea.setTextSize(pxToDp(14));
 					textViewArea.setTextColor(Color.BLACK);
-					textViewArea.setLayoutParams(textViewAreaLayoutParams);
+					if(cardClass.getType().equals("手下")){						
+						textViewArea.setLayoutParams(textViewAreaLayoutParams2);						
+					}else{
+						textViewArea.setLayoutParams(textViewAreaLayoutParams);
+					}
 					textViewArea.setBackgroundColor(Color.rgb(160, 142, 120));
+					textViewArea.setPadding(dpToPx(5), 0, 0, dpToPx(5));
+					textViewArea.resetTextSize();
 					relativeLayout.addView(textViewArea);
 				}
 			}
@@ -255,7 +272,9 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		public void onLongPress(MotionEvent e) {
 			// TODO Auto-generated method stub
 			Log.i("onLongPress","onLongPress");
-			saveCard();
+			if(modeId == 1){
+				saveCard();
+			}
 			super.onLongPress(e);
 		}
 
@@ -347,6 +366,7 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
                 .setDuration(200).start();
                 */
 			}else{
+				startVibrator();
 				Toast.makeText(getActivity(), "已經沒有上一頁了", Toast.LENGTH_SHORT).show();
 			}
 		}else{
@@ -364,6 +384,7 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
                 .setDuration(200).start();
                 */
 			}else{
+				startVibrator();
 				Toast.makeText(getActivity(), "已經沒有下一頁了", Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -410,38 +431,66 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 	
 	private void saveCard(){
 		
-		imageviewAnimation();
+		int pos = clickCardId-44;
+		CardClass cardClass = cardArrayList.get(pos);
+		if(((MainActivity)getActivity()).checkCustomCard(cardClass)){
+			imageviewAnimation(cardClass, pos);
+		}else{
+			startVibrator();
+		}
+		
 		
 	}
 	
-	private void imageviewAnimation(){
-		ImageView imageView = (ImageView)mView.findViewWithTag("im"+String.valueOf(clickCardId-44));
-		RelativeLayout relativeLayout = (RelativeLayout)imageView.getParent();
+	private void imageviewAnimation(CardClass cardClass, int pos){
+		ImageView imageView = (ImageView)mView.findViewWithTag("im"+String.valueOf(pos));
+		RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.RelativeParent);
+		
+		//RelativeLayout relativeLayout = (RelativeLayout)imageView.getParent();
 		
 		Context context = getActivity().getApplicationContext();
 		int actionBarHeight = getArguments().getInt("actionBarHeight");
 		int windowHeight = WindowsHeightAndWidth.getHeight();
 		int windowWidth = WindowsHeightAndWidth.getWidth();
-		int fragmentHeight = (Math.abs(windowHeight-actionBarHeight))/2;
-		int layoutHeight = fragmentHeight/2;
+		int layoutHeight = (Math.abs(windowHeight-actionBarHeight))/2;
+		int layoutWidth = windowWidth/2;
 		
 		CardImageLoader cardImageLoader = new CardImageLoader(context);
 		RelativeLayout.LayoutParams imageViewLayoutParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT, (int)(fragmentHeight *0.8));
-		imageViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		imageViewLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+				layoutWidth, layoutHeight);
+		switch(pos){
+			case 0:
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+				break;
+			case 1:
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+				break;
+			case 2:
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				break;
+			case 3:
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+				imageViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				break;
+		}
 		
-		CardClass cardClass = cardArrayList.get((clickCardId-44));
+		
 		ImageView tempImageView = new ImageView(context);
-		tempImageView.setAlpha(80);
-		tempImageView.setLayoutParams(imageViewLayoutParams);				
+		tempImageView.setAlpha(0.8f);			
 		cardImageLoader.loadBitmap(Integer.valueOf(cardClass.get_id()), tempImageView);	
+		tempImageView.setLayoutParams(imageViewLayoutParams);
+		tempImageView.bringToFront();
+		tempImageView.requestLayout();
 		relativeLayout.addView(tempImageView);	
+		
 		
 		AnimationSet animationSet = new AnimationSet(true);		
 		int anHeight = -20;
 		if((clickCardId-44) == 1 || (clickCardId-44) == 3){
-			anHeight = -fragmentHeight; 
+			anHeight = -layoutHeight; 
 		}
 		int anWidth = (int)(windowWidth*0.5);
 		if((clickCardId-44) == 0 || (clickCardId-44) == 1){
@@ -449,22 +498,25 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		}
 		TranslateAnimation translateAnimation = new TranslateAnimation(0,anWidth,0,anHeight);
 		translateAnimation.setDuration(500);
+		translateAnimation.setZAdjustment(TranslateAnimation.ZORDER_TOP);
 		translateAnimation.setAnimationListener(new MyAnimationListener(tempImageView));
 		
 		AlphaAnimation trans0to1 = new AlphaAnimation (0,1);
         trans0to1.setDuration(500);
-        trans0to1.setInterpolator(new AccelerateInterpolator(1.0f));
-        imageView.setAnimation(trans0to1);
+        //trans0to1.setInterpolator(new AccelerateInterpolator(1.0f));
+        imageView.startAnimation(trans0to1);
         
 		ScaleAnimation scaleAnimation = new ScaleAnimation(1, 0, 1, 0);
 		scaleAnimation.setDuration(500);
 		
 		animationSet.setFillAfter(true);
+		animationSet.setZAdjustment(AnimationSet.ZORDER_TOP);
 		animationSet.addAnimation(scaleAnimation);
 		animationSet.addAnimation(translateAnimation);
 		
 		
 		tempImageView.startAnimation(animationSet);
+		
 		
 		
 	}
@@ -564,6 +616,12 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 	    int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
 	    return dp;
 	}
+	
+	public int dpToPx(int dp) {
+	    DisplayMetrics displayMetrics = getActivity().getApplicationContext().getResources().getDisplayMetrics();
+	    int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
+	    return px;
+	}
 	    
 	private class MyAnimationListener implements AnimationListener {
 	    ImageView imageView;
@@ -579,6 +637,11 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 	    }
 	    public void onAnimationStart(Animation animation) {
 	    }
+	}
+	
+	private void startVibrator(){
+		Vibrator myVibrator = (Vibrator) getActivity().getApplication().getSystemService(Service.VIBRATOR_SERVICE);
+		myVibrator.vibrate(100);
 	}
 
 }
