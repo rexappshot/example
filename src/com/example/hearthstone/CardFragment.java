@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -150,11 +151,12 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		int fragmentHeight = (Math.abs(windowHeight-actionBarHeight))/2;
 		int layoutHeight = fragmentHeight/2;
 		int layoutWidth = windowWidth/2;
+		
 		RelativeLayout.LayoutParams textViewLayoutParams = new RelativeLayout.LayoutParams(
-				(int)(layoutWidth*0.6), (int)(layoutHeight*0.2));
+				(int)(layoutWidth*0.8), (int)(layoutHeight*0.3));
 		textViewLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		textViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		textViewLayoutParams.setMargins(0, (int)(layoutHeight*0.9), 0, 0);
+		//textViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		textViewLayoutParams.setMargins((int)(layoutWidth*0.13), (int)(layoutHeight*0.95), 0, 0);
 		
 		RelativeLayout.LayoutParams textViewAreaLayoutParams = new RelativeLayout.LayoutParams(
 				(int)(layoutWidth*0.6), (int)(layoutHeight*0.4));
@@ -204,18 +206,26 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 				//textView.setText(cardClass.getName());	
 				String[] nameArray = cardClass.getName().split("／");
 				textView.setText(nameArray[0].replaceAll(" ", ""));
-				textView.setGravity(Gravity.CENTER);				
-				textView.setBackgroundColor(Color.GRAY);
-				textView.setLayoutParams(textViewLayoutParams);
+				textView.setTextColor(Color.BLACK);
+				//textView.setGravity(Gravity.TOP);	
+				textView.setGravity(Gravity.CENTER_HORIZONTAL);				
+				if(cardClass.getType().equals("手下")){
+					textView.setBackgroundResource(R.drawable.t01);
+					textView.setPadding(0, pxToDp(10), 0, 0);
+				}else{
+					textView.setBackgroundResource(R.drawable.t02);
+				}
+				textView.setLayoutParams(textViewLayoutParams);				
 				relativeLayout.addView(textView);
 				
 				if(cardClass.getDescription() != null){
 					TextView textViewArea = new TextView(context);	
 					textViewArea.setText(cardClass.getDescription());
 					textViewArea.setGravity(Gravity.CENTER);
-					textViewArea.setTextSize(10);
-					textViewArea.setBackgroundColor(Color.BLUE);
+					textViewArea.setTextSize(pxToDp(14));
+					textViewArea.setTextColor(Color.BLACK);
 					textViewArea.setLayoutParams(textViewAreaLayoutParams);
+					textViewArea.setBackgroundColor(Color.rgb(160, 142, 120));
 					relativeLayout.addView(textViewArea);
 				}
 			}
@@ -524,6 +534,12 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 			textViewStory.setLayoutParams(textViewStoryLayoutParams);
 			relativeLayout.addView(textViewStory);
 		}
+	}
+	
+	public int pxToDp(int px) {
+	    DisplayMetrics displayMetrics = getActivity().getApplicationContext().getResources().getDisplayMetrics();
+	    int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+	    return dp;
 	}
 
 }

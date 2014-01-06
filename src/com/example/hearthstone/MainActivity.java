@@ -183,7 +183,7 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		
 		actionBar = getSupportActionBar();
 	    actionBar.setDisplayHomeAsUpEnabled(true);
-	    actionBar.setTitle("全部");
+	    actionBar.setTitle("瀏覽卡片");
 	    actionBar.setIcon(new BitmapDrawable(defaultIconBitmap));
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
