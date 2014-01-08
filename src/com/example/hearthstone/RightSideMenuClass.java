@@ -1,20 +1,19 @@
 package com.example.hearthstone;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.LinkedList;
 
-import com.example.allinterface.CardClass;
-
-import android.R.integer;
 import android.app.Activity;
-import android.content.Context;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.allinterface.CardClass;
 
 public class RightSideMenuClass {
 	
 	private Activity activity;
 	private static LinkedList<Integer> cardID;
 	private static LinkedList<CardClass> cards;
+	private static BarChartClass barChartClass;
 
 	public RightSideMenuClass(Activity activity) {
 		// TODO Auto-generated constructor stub
@@ -26,6 +25,16 @@ public class RightSideMenuClass {
 		if(cards == null){
 			cards = new LinkedList<CardClass>();
 		}
+		
+		if(barChartClass == null){
+			barChartClass = new BarChartClass(activity, "卡片/法力消耗");
+		}
+		LinearLayout linearLayout = (LinearLayout)activity.findViewById(R.id.rightLinearlayout);
+		TextView textView = new TextView(activity);
+		textView.setText("arar");
+		linearLayout.addView(barChartClass.getBarChart(), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT
+					, 400));
+		linearLayout.addView(textView);
 	}
 	
 	public void addCard(CardClass cardClass){

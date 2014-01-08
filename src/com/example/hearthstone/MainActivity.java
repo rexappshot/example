@@ -1,37 +1,24 @@
 package com.example.hearthstone;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 
-import android.R.integer;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.View.OnTouchListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,7 +28,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
-import com.example.allconnector.CardImageLoader;
 import com.example.allconnector.WindowsHeightAndWidth;
 import com.example.allinterface.CardClass;
 import com.example.allinterface.LeftClickInterface;
@@ -56,7 +42,6 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 	private static int tabkey;
 	private static ActionBar actionBar; 
 	private static String[] jobs;
-	private ProgressDialog progressDialog;	
 	public static SearchInterface searchInterface;
 	private final String[] spinnerBaseItem = {"無限制","0","1","2","3","4","5","6","7以上"};
 	private final String[] spinnerTypeItem = {"無限制","法術","手下","武器"};
@@ -81,7 +66,7 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 			case R.id.search_button:
 				searchButtonClickEvent();
 				break;				
-			case R.id.compose_button:
+			case R.id.compose_button:				
 				simpleSideDrawer.openRightSide();
 				break;	
 			case R.id.hero_button_0:				
@@ -129,6 +114,9 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		setStartTab();		
 		setSearchDialog();
 		
+		if(rightSideMenuClass == null){
+			rightSideMenuClass = new RightSideMenuClass(this);
+		}
 		
 	}
 
@@ -454,12 +442,8 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		
 	}
 
-	public boolean checkCustomCard(CardClass cardClass){
+	public boolean checkCustomCard(CardClass cardClass){	
 		
-		if(rightSideMenuClass == null){
-			rightSideMenuClass = new RightSideMenuClass(this);
-		}
-
 		if(cardClass.getRare().equals("傳說")){
 			if(rightSideMenuClass.isFullOneCard(Integer.valueOf(cardClass.get_id()))){
 				saveCustomCard(cardClass);				
