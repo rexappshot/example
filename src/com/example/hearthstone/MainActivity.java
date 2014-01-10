@@ -66,7 +66,8 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 			case R.id.search_button:
 				searchButtonClickEvent();
 				break;				
-			case R.id.compose_button:				
+			case R.id.compose_button:	
+				rightSideMenuClass.refreshRightMenu();
 				simpleSideDrawer.openRightSide();
 				break;	
 			case R.id.hero_button_0:				
@@ -114,9 +115,7 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		setStartTab();		
 		setSearchDialog();
 		
-		if(rightSideMenuClass == null){
-			rightSideMenuClass = new RightSideMenuClass(this);
-		}
+		
 		
 	}
 
@@ -164,6 +163,10 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 		simpleSideDrawer = new SimpleSideDrawer(MainActivity.this);
 		simpleSideDrawer.setLeftBehindContentView(R.layout.activity_left_sidemenu);	
 		simpleSideDrawer.setRightBehindContentView(R.layout.activity_right_sidemenu);
+		
+		if(rightSideMenuClass == null){
+			rightSideMenuClass = new RightSideMenuClass(this);
+		}
 		
 		return new LeftSideMenuClass(this, this, simpleSideDrawer).createLeftMenu();
 
@@ -444,23 +447,28 @@ public class MainActivity extends SherlockFragmentActivity implements LeftClickI
 
 	public boolean checkCustomCard(CardClass cardClass){	
 		
-		if(cardClass.getRare().equals("傳說")){
-			if(rightSideMenuClass.isFullOneCard(Integer.valueOf(cardClass.get_id()))){
-				saveCustomCard(cardClass);				
-				return true;
+		if(rightSideMenuClass.isFullCard()){
+			if(cardClass.getRare().equals("傳說")){
+				if(rightSideMenuClass.isFullOneCard(Integer.valueOf(cardClass.get_id()))){
+					saveCustomCard(cardClass);				
+					return true;
+				}else{
+					Toast.makeText(this, "傳說卡片最多只能放置一張", Toast.LENGTH_SHORT).show();				
+					return false;
+				}
 			}else{
-				Toast.makeText(this, "此卡數量已到達上限", Toast.LENGTH_SHORT).show();				
-				return false;
-			}
+				if(rightSideMenuClass.isFullTwoCard(Integer.valueOf(cardClass.get_id()))){
+					saveCustomCard(cardClass);
+					return true;
+				}else{
+					Toast.makeText(this, "此類型卡片最多只能放置兩張", Toast.LENGTH_SHORT).show();
+					return false;
+				}
+			}	
 		}else{
-			if(rightSideMenuClass.isFullTwoCard(Integer.valueOf(cardClass.get_id()))){
-				saveCustomCard(cardClass);
-				return true;
-			}else{
-				Toast.makeText(this, "此卡數量已到達上限", Toast.LENGTH_SHORT).show();
-				return false;
-			}
-		}		
+			Toast.makeText(this, "卡片已滿,上限為30張", Toast.LENGTH_SHORT).show();
+			return false;
+		}
 		
 	}
 	

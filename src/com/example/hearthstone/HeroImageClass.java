@@ -28,10 +28,10 @@ public class HeroImageClass {
 	public static void makeImages(){
 		
 		String baseHeroPath = baseHeroPath();		
-		final int height = dpToPx(96);
-		final int width = dpToPx(96);
-		//final int height = (int) (WindowsHeightAndWidth.getHeight()*0.3);
-		//final int width = (int) (WindowsHeightAndWidth.getWidth()*0.3);
+		//final int height = dpToPx(96);
+		//final int width = dpToPx(96);
+		final int height = (int) (WindowsHeightAndWidth.getHeight()*0.2);
+		final int width = (int) (WindowsHeightAndWidth.getWidth()*0.2);
 		
 		for(int i=0; i<9; i++) {
 			heroImageDecode(i, height, width, baseHeroPath);

@@ -65,6 +65,7 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 	public String where;
 	public int modeId;
 	public int clickCardId;
+	private SQLiteDatabase database;
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 		mainActivity.passInterface(this);
 		*/
 		
-		SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(
+		database = SQLiteDatabase.openOrCreateDatabase(
 				DBManager.DB_PATH + "/" + getResources().getString(R.string.datebase_name), null);
 		
 		getCard(database);
@@ -110,6 +111,21 @@ public class CardFragment extends SherlockFragment implements SearchInterface{
 
 	}
 	
+	@Override
+	public void onPause() {
+		database.close();
+        super.onPause();
+        
+    }
+	
+
+	@Override
+	public void onResume() {
+		database = SQLiteDatabase.openOrCreateDatabase(
+				DBManager.DB_PATH + "/" + getResources().getString(R.string.datebase_name), null);
+		super.onResume();
+	}
+
 	
 	private void getCard(SQLiteDatabase database){		
 				
